@@ -1,0 +1,29 @@
+# Base image: Use a suitable Java-based image for Gerrit
+FROM openjdk:17-jdk-slim
+
+# Install necessary tools and dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    wget \
+    unzip \
+    nano \
+    sudo \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR $DOCKER_GERRIT_SITE/etc
+
+COPY cert.pem /cert.pem
+
+RUN keytool -import -alias authentik -keystore cacerts -file /cert.pem -noprompt
+
+# Expose Gerrit HTTP and SSH ports
+EXPOSE 8081 29418
+
+# Set up Gerrit entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Run Gerrit
+ENTRYPOINT ["/entrypoint.sh"]
+
+WORKDIR /

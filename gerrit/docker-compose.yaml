@@ -1,0 +1,12 @@
+services:
+  gerrit:
+    container_name: gerrit-code-review
+    restart: unless-stopped
+    env_file: ".env"
+    build:
+      context: ./
+    ports:
+      - "29418:29418"
+      - "8081:8081"
+    volumes:
+     - /var/gerrit:/var/gerrit

@@ -1,0 +1,43 @@
+[gerrit]
+  basePath = git
+  canonicalWebUrl = http://localhost:8081
+  serverId = 860c8eae-6255-4efd-98dd-4244a92a53ee
+  installModule = com.googlesource.gerrit.plugins.saml.Module
+
+[container]
+  javaOptions = "-Dflogger.backend_factory=com.google.common.flogger.backend.log4j.Log4jBackendFactory#getInstance"
+  javaOptions = "-Dflogger.logging_context=com.google.gerrit.server.logging.LoggingContext#getInstance"
+  user = root
+  javaHome = /usr/local/openjdk-17
+
+[index]
+  type = LUCENE
+
+[auth]
+  type = HTTP
+  logoutUrl = http://localhost:9000
+  httpHeader = X-SAML-UserName
+  httpEmailHeader = X-SAML-EmailHeader
+  httpExternalIdHeader = X-SAML-ExternalId
+  userNameCaseInsensitive = true
+
+[receive]
+  enableSignedPush = false
+
+[sendemail]
+  smtpServer = localhost
+
+[sshd]
+  listenAddress = *:29418
+  advertisedAddress = localhost:29418
+
+[httpd]
+  listenUrl = proxy-https://*:8081/
+  filterClass = com.googlesource.gerrit.plugins.saml.SamlWebFilter
+  requestLog = true
+
+[cache]
+  directory = cache
+
+[saml]
+  keystorePath = /var/gerrit/review_site/etc/samlKeystore.jks
